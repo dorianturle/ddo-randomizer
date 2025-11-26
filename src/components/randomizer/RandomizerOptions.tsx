@@ -197,10 +197,10 @@ export default function Options({ destinyTreesSelectedLength = 0 } : { destinyTr
                                 </div>
 
 
-                                <Label htmlFor="racial_pts" className="flex flex-wrap items-center justify-center gap-2">
+                                <Label htmlFor="destiny_pts" className="flex flex-wrap items-center justify-center gap-2">
                                     Destiny Points (max {maxDestinyPoints})
                                     <TextInput
-                                        id="racial_pts"
+                                        id="destiny_pts"
                                         placeholder={minDestinyPoints.toString()}
                                         type="number"
                                         min={minDestinyPoints}
