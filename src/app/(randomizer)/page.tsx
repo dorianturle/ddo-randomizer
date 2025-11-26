@@ -17,7 +17,7 @@ import type { UniversalTree as UniversalTreeType } from "@/types/universal_trees
 import type { DestinyTree as DestinyTreeType } from "@/types/destiny_trees"
 import Loading from "@/app/(randomizer)/loading";
 import StartingStats from "@/components/randomizer/StartingStats";
-import {Button} from "flowbite-react";
+import {Button, ButtonGroup} from "flowbite-react";
 
 export default function Randomizer() {
     const [isDataLoaded, setisDataLoaded] = useState<boolean>(false)
@@ -45,7 +45,7 @@ export default function Randomizer() {
 
     return (
         <div className="md:container px-2 mb-5 mx-auto">
-            <h1 className="text-5xl font-bold text-center mb-3 break-words">
+            <h1 className="text-5xl font-bold text-center mb-3 wrap-break-word">
                 DDO Class Randomizer
             </h1>
 
@@ -69,10 +69,10 @@ export default function Randomizer() {
                 {destinyTrees ? <RandomizerOptions destinyTreesSelectedLength={destinyTrees.filter((dT: DestinyTreeType) => dT.isBought).length} /> : <Loading name="randomizer options" />}
 
 
-                <Button.Group className="rounded-lg justify-center shadow-none">
+                <ButtonGroup className="rounded-lg justify-center shadow-none">
                     <Button outline color="cyan" disabled={ !isDataLoaded }>Randomize !</Button>
                     <Button outline color="pink" disabled={ !isDataLoaded }>Clear</Button>
-                </Button.Group>
+                </ButtonGroup>
             </div>
         </div>
     );

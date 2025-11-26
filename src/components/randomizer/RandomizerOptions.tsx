@@ -78,7 +78,7 @@ export default function Options({ destinyTreesSelectedLength = 0 } : { destinyTr
                                 <Label htmlFor="randomize-enhancement-trees-checkbox"
                                        className="flex items-center gap-2">
                                     <Checkbox
-                                        className="w-4 h-4 rounded bg-gray-300 dark:bg-gray-600 text-orange-500 focus:ring-orange-500 dark:focus:ring-orange-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:border-gray-500"
+                                        className="w-4 h-4 rounded-sm bg-gray-300 dark:bg-gray-600 text-orange-500 focus:ring-orange-500 dark:focus:ring-orange-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:border-gray-500"
                                         checked={randomizeEnhancementTrees}
                                         id="randomize-enhancement-trees-checkbox"
                                         onChange={() => setRandomizeEnhancementTrees(!randomizeEnhancementTrees)}
@@ -161,7 +161,7 @@ export default function Options({ destinyTreesSelectedLength = 0 } : { destinyTr
                             <div className="flex items-center">
                                 <Label htmlFor="randomize-destiny-trees-checkbox" className="flex items-center gap-2">
                                     <Checkbox
-                                        className="w-4 h-4 rounded bg-gray-300 dark:bg-gray-600 text-orange-500 focus:ring-orange-500 dark:focus:ring-orange-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:border-gray-500"
+                                        className="w-4 h-4 rounded-sm bg-gray-300 dark:bg-gray-600 text-orange-500 focus:ring-orange-500 dark:focus:ring-orange-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:border-gray-500"
                                         checked={randomizeDestinyTrees}
                                         id="randomize-destiny-trees-checkbox"
                                         onChange={() => setRandomizeDestinyTrees(!randomizeDestinyTrees)}
@@ -225,7 +225,7 @@ export default function Options({ destinyTreesSelectedLength = 0 } : { destinyTr
                             { Object.keys(numberAllowedClass).map((option: string, k: number) =>
                                 <Label key={k} htmlFor={`class_${k}`} className="flex items-center gap-2">
                                     <Checkbox
-                                        className="w-4 h-4 rounded bg-gray-300 dark:bg-gray-600 text-orange-500 focus:ring-orange-500 dark:focus:ring-orange-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:border-gray-500"
+                                        className="w-4 h-4 rounded-sm bg-gray-300 dark:bg-gray-600 text-orange-500 focus:ring-orange-500 dark:focus:ring-orange-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:border-gray-500"
                                         checked={numberAllowedClass[+option]}
                                         id={`class_${k}`}
                                         onChange={(e : ChangeEvent<HTMLInputElement>) => setNumberAllowedClass({...numberAllowedClass, [+option]: e.target.checked})}

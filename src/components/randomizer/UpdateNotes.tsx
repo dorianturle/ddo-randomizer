@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react";
-import { Button, Modal } from "flowbite-react";
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from "flowbite-react";
 
 export default function UpdateNotes() {
     const [openModal, setOpenModal] = useState(false)
@@ -15,10 +15,10 @@ export default function UpdateNotes() {
             </div>
 
             <Modal dismissible size="3xl" show={openModal} onClose={() => setOpenModal(false)}>
-            <Modal.Header>Update Notes</Modal.Header>
-            <Modal.Body>
+            <ModalHeader>Update Notes</ModalHeader>
+            <ModalBody>
                 <div className="flex flex-col gap-5 text-white">
-                    <div className="flex flex-col gap-2 bg-cyan-600 rounded p-3">
+                    <div className="flex flex-col gap-2 bg-cyan-600 rounded-sm p-3">
                         <h2 className="text-2xl underline font-bold">2024-02-29</h2>
 
                         <div className="flex flex-col gap-1">
@@ -29,7 +29,7 @@ export default function UpdateNotes() {
                         </div>
                     </div>
 
-                    <div className="flex flex-col gap-2 bg-gray-600 rounded p-3">
+                    <div className="flex flex-col gap-2 bg-gray-600 rounded-sm p-3">
                         <h2 className="text-2xl underline font-bold">2023-07-27</h2>
 
                         <div className="flex flex-col gap-1">
@@ -43,7 +43,7 @@ export default function UpdateNotes() {
                         </div>
                     </div>
 
-                    <div className="flex flex-col gap-2 bg-gray-600 rounded p-3">
+                    <div className="flex flex-col gap-2 bg-gray-600 rounded-sm p-3">
                         <h2 className="text-2xl underline font-bold">2023-07-13</h2>
 
                         <div className="flex flex-col gap-1">
@@ -57,7 +57,7 @@ export default function UpdateNotes() {
                         </div>
                     </div>
 
-                    <div className="flex flex-col gap-2 bg-gray-600 rounded p-3">
+                    <div className="flex flex-col gap-2 bg-gray-600 rounded-sm p-3">
                         <h2 className="text-2xl underline font-bold">2023-07-12</h2>
 
                         <div className="flex flex-col gap-1">
@@ -81,7 +81,7 @@ export default function UpdateNotes() {
                         </div>
                     </div>
 
-                    <div className="flex flex-col gap-2 bg-gray-600 rounded p-3">
+                    <div className="flex flex-col gap-2 bg-gray-600 rounded-sm p-3">
                         <h2 className="text-2xl underline font-bold">2023-07-07</h2>
 
                         <div className="flex flex-col gap-1">
@@ -110,10 +110,10 @@ export default function UpdateNotes() {
                         </div>
                     </div>
                 </div>
-            </Modal.Body>
-            <Modal.Footer className="justify-end" >
+            </ModalBody>
+            <ModalFooter className="justify-end" >
                 <Button onClick={() => setOpenModal(false)}>Close</Button>
-            </Modal.Footer>
+            </ModalFooter>
         </Modal>
         </>
     );

@@ -1,4 +1,4 @@
-import { DarkThemeToggle, Flowbite, ThemeModeScript } from "flowbite-react";
+import { DarkThemeToggle, ThemeModeScript } from "flowbite-react";
 import "./globals.css";
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode; }>) {
@@ -9,12 +9,10 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             <ThemeModeScript/>
         </head>
         <body className="bg-white dark:bg-gray-800 text-slate-900 dark:text-white min-w-fit">
-            <Flowbite>
-                <div className={"flex justify-end"}>
-                    <DarkThemeToggle/>
-                </div>
-                { children }
-            </Flowbite>
+            <div className={"flex justify-end"}>
+                <DarkThemeToggle/>
+            </div>
+            { children }
         </body>
       </html>
   );

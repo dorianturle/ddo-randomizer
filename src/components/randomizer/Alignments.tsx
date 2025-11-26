@@ -8,7 +8,7 @@ export function Options({ data, setChange } : { data : Alignment[], setChange: (
         <div className="flex flex-wrap justify-center gap-3 p-3 grow rounded-lg text-gray-900 bg-gray-300 dark:bg-gray-700 dark:text-white">
             { data.map((option: Alignment, k: number) =>
                 <Label key={k} htmlFor={`alignment_${option.alias}`} className="flex items-center gap-2">
-                    <Checkbox className="w-4 h-4 rounded bg-gray-300 dark:bg-gray-600 text-orange-500 focus:ring-orange-500 dark:focus:ring-orange-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:border-gray-500"
+                    <Checkbox className="w-4 h-4 rounded-sm bg-gray-300 dark:bg-gray-600 text-orange-500 focus:ring-orange-500 dark:focus:ring-orange-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:border-gray-500"
                               checked={option.selected}
                               id={`alignment_${option.alias}`}
                               onChange={(e : ChangeEvent<HTMLInputElement>) => setChange(e, option.category, k)}
