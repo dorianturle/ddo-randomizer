@@ -3,8 +3,9 @@ import {Checkbox, Label, Tooltip} from "flowbite-react";
 import type {Class, Classes} from "@/types/classes";
 import {isSelected} from "@/utils";
 
-export function Icons (
-    { data, dataType, color, displayNames, setChange } : { data : Class[], dataType: string, color: string, displayNames: boolean, setChange: (e: ChangeEvent<HTMLInputElement>, type?: string, k?: number) => void }) {
+export function Icons ({ data, dataType, color, displayNames, setChange } : {
+    data : Class[], dataType: string, color: string, displayNames: boolean, setChange: (e: ChangeEvent<HTMLInputElement>, type?: string, k?: number) => void
+}) {
     return (
         <div className={`flex flex-col gap-2 p-3 grow ${color} ${dataType === 'free' ? 'rounded-l-lg' : dataType === 'archetype' ? 'rounded-r-lg' : ''}`}>
             <span className="text-center text-slate-900">{dataType.charAt(0).toUpperCase() + dataType.slice(1)}</span>
@@ -46,7 +47,7 @@ export function Icons (
     );
 }
 
-export default function Classes({classes, editClasses, displayNames}: {
+export default function Classes({classes, editClasses, displayNames} : {
     classes: Classes,
     editClasses: Dispatch<Classes>,
     displayNames: boolean

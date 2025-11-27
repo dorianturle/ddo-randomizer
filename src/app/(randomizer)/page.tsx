@@ -8,7 +8,7 @@ import Alignments from '@/components/randomizer/Alignments'
 import UniversalTrees from '@/components/randomizer/UniversalTrees'
 import DestinyTrees from '@/components/randomizer/DestinyTrees'
 import RandomizerOptions from '@/components/randomizer/RandomizerOptions'
-import {useEffect, useState} from "react";
+import {useEffect, useEffectEvent, useState} from "react";
 import type { Races as RacesType } from "@/types/races"
 import type { Classes as ClassesType } from "@/types/classes"
 import type { Alignment as AlignmentType } from "@/types/alignments"
@@ -29,8 +29,12 @@ export default function Randomizer() {
     const [universalTrees, setUniversalTrees] = useState<null|Array<UniversalTreeType>>(null)
     const [destinyTrees, setDestinyTrees] = useState<null|Array<DestinyTreeType>>(null)
 
-    useEffect(() => {
+    const fetchLocalStorage = useEffectEvent(() => {
         setDisplayNames(!localStorage.getItem("displayNames") || localStorage.getItem("displayNames") === "true")
+    })
+
+    useEffect(() => {
+        fetchLocalStorage();
 
         Promise.all([
             fetch(`/api/races`, {cache: 'no-store'}).then(r => r.json()).then(r => setRaces(r)),
@@ -67,7 +71,6 @@ export default function Randomizer() {
                 {destinyTrees ? <DestinyTrees destinyTrees={destinyTrees} editDestinyTrees={setDestinyTrees} /> : <Loading name="destiny trees" />}
 
                 {destinyTrees ? <RandomizerOptions destinyTreesSelectedLength={destinyTrees.filter((dT: DestinyTreeType) => dT.isBought).length} /> : <Loading name="randomizer options" />}
-
 
                 <ButtonGroup className="rounded-lg justify-center shadow-none">
                     <Button outline color="cyan" disabled={ !isDataLoaded }>Randomize !</Button>

@@ -1,4 +1,4 @@
-import {ChangeEvent, useMemo, useState} from "react";
+import {ChangeEvent, useEffect, useLayoutEffect, useMemo, useState} from "react";
 import {Checkbox, Label, Radio, TextInput, Tooltip} from "flowbite-react";
 import {HiExclamationCircle} from "react-icons/hi";
 import type {UniversalTree} from "@/types/universal_trees";
@@ -8,8 +8,8 @@ let maxRacialPoints = 14;
 
 let maxLevel = 34;
 // 12 (from 12 trees) + 40 (4 * 10 epic lvls) + (4 * legendary lvls) + 14 (past lives + fate tomes)
-let minDestinyPoints = 12 + 40 + ((maxLevel - 30) * 4);
-let maxDestinyPoints = 12 + 40 + ((maxLevel - 30) * 4) + 14;
+const minDestinyPointsCalc = 12 + 40 + ((maxLevel - 30) * 4);
+const maxDestinyPointsCalc = 12 + 40 + ((maxLevel - 30) * 4) + 14;
 
 export default function Options({ destinyTreesSelectedLength = 0 } : { destinyTreesSelectedLength : number }) {
     const [randomizeEnhancementTrees, setRandomizeEnhancementTrees] = useState<boolean>(true);
@@ -18,7 +18,17 @@ export default function Options({ destinyTreesSelectedLength = 0 } : { destinyTr
 
     const [randomizeDestinyTrees, setRandomizeDestinyTrees] = useState<boolean>(true);
     const [destinyTier5, setDestinyTier5] = useState<string>("without_tier5");
+
+    const minDestinyPoints : number = minDestinyPointsCalc + destinyTreesSelectedLength;
+    const maxDestinyPoints : number = maxDestinyPointsCalc + destinyTreesSelectedLength;
+    
     const [destinyPoints, setDestinyPoints] = useState<number>(minDestinyPoints);
+
+    if (destinyPoints < minDestinyPoints) {
+        setDestinyPoints(minDestinyPoints)
+    } else if(destinyPoints > maxDestinyPoints) {
+        setDestinyPoints(maxDestinyPoints)
+    }
 
     const [numberAllowedClass, setNumberAllowedClass]  = useState<{ [key: number]: boolean }>({
         1: true,
@@ -27,17 +37,6 @@ export default function Options({ destinyTreesSelectedLength = 0 } : { destinyTr
     });
 
     const [weight, setWeight] = useState<string>("no_weight");
-
-    useMemo(() => {
-        minDestinyPoints = 68 + destinyTreesSelectedLength
-        maxDestinyPoints = 82 + destinyTreesSelectedLength
-
-        if (destinyPoints < minDestinyPoints) {
-            setDestinyPoints(minDestinyPoints)
-        } else if(destinyPoints > maxDestinyPoints) {
-            setDestinyPoints(maxDestinyPoints)
-        }
-    }, [destinyPoints, destinyTreesSelectedLength])
 
     const handleRacialPointsChange = (e : ChangeEvent<HTMLInputElement>) => {
         if (e.target.value === '') {
@@ -72,21 +71,16 @@ export default function Options({ destinyTreesSelectedLength = 0 } : { destinyTr
                     <div className="w-40">
                         <span>Enhancement Trees :</span>
                     </div>
-                    <div className="flex flex-wrap flex-col grow gap-2">
-                        <div className="flex flex-wrap justify-center">
-                            <div className="flex items-center">
-                                <Label htmlFor="randomize-enhancement-trees-checkbox"
-                                       className="flex items-center gap-2">
-                                    <Checkbox
-                                        className="w-4 h-4 rounded-sm bg-gray-300 dark:bg-gray-600 text-orange-500 focus:ring-orange-500 dark:focus:ring-orange-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:border-gray-500"
-                                        checked={randomizeEnhancementTrees}
-                                        id="randomize-enhancement-trees-checkbox"
-                                        onChange={() => setRandomizeEnhancementTrees(!randomizeEnhancementTrees)}
-                                    />
-                                    Randomize enhancement trees
-                                </Label>
-                            </div>
-                        </div>
+                    <div className="flex flex-col grow gap-2">
+                        <Label htmlFor="randomize-enhancement-trees-checkbox" className="flex items-center gap-2 m-auto">
+                            <Checkbox
+                                className="w-4 h-4 rounded-sm bg-gray-300 dark:bg-gray-600 text-orange-500 focus:ring-orange-500 dark:focus:ring-orange-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:border-gray-500"
+                                checked={randomizeEnhancementTrees}
+                                id="randomize-enhancement-trees-checkbox"
+                                onChange={() => setRandomizeEnhancementTrees(!randomizeEnhancementTrees)}
+                            />
+                            Randomize
+                        </Label>
 
                         {randomizeEnhancementTrees ? (
                             <div className="flex flex-wrap flex-col grow gap-2">
@@ -111,7 +105,7 @@ export default function Options({ destinyTreesSelectedLength = 0 } : { destinyTr
                                         />
                                         Class capstone
 
-                                        <Tooltip content="Choosing this option will prevent multiclassing.">
+                                        <Tooltip content="This option prevents multiclassing.">
                                             <HiExclamationCircle size={20}/>
                                         </Tooltip>
                                     </Label>
@@ -126,7 +120,7 @@ export default function Options({ destinyTreesSelectedLength = 0 } : { destinyTr
                                         Universal capstone
 
                                         <Tooltip
-                                            content="If there is no universal tree selected, this will be ignored.">
+                                            content="This will be ignored if no universal tree is selected.">
                                             <HiExclamationCircle size={20}/>
                                         </Tooltip>
                                     </Label>
@@ -156,20 +150,16 @@ export default function Options({ destinyTreesSelectedLength = 0 } : { destinyTr
                     <div className="w-40">
                         <span>Destiny Trees :</span>
                     </div>
-                    <div className="flex flex-wrap flex-col grow gap-2">
-                        <div className="flex flex-wrap justify-center">
-                            <div className="flex items-center">
-                                <Label htmlFor="randomize-destiny-trees-checkbox" className="flex items-center gap-2">
-                                    <Checkbox
-                                        className="w-4 h-4 rounded-sm bg-gray-300 dark:bg-gray-600 text-orange-500 focus:ring-orange-500 dark:focus:ring-orange-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:border-gray-500"
-                                        checked={randomizeDestinyTrees}
-                                        id="randomize-destiny-trees-checkbox"
-                                        onChange={() => setRandomizeDestinyTrees(!randomizeDestinyTrees)}
-                                    />
-                                    Randomize destiny trees
-                                </Label>
-                            </div>
-                        </div>
+                    <div className="flex flex-col grow gap-2">
+                        <Label htmlFor="randomize-destiny-trees-checkbox" className="flex items-center gap-2 m-auto">
+                            <Checkbox
+                                className="w-4 h-4 rounded-sm bg-gray-300 dark:bg-gray-600 text-orange-500 focus:ring-orange-500 dark:focus:ring-orange-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:border-gray-500"
+                                checked={randomizeDestinyTrees}
+                                id="randomize-destiny-trees-checkbox"
+                                onChange={() => setRandomizeDestinyTrees(!randomizeDestinyTrees)}
+                            />
+                            Randomize
+                        </Label>
 
                         {randomizeDestinyTrees ? (
                             <div className="flex flex-wrap flex-col grow gap-2">
@@ -198,7 +188,7 @@ export default function Options({ destinyTreesSelectedLength = 0 } : { destinyTr
 
 
                                 <Label htmlFor="destiny_pts" className="flex flex-wrap items-center justify-center gap-2">
-                                    Destiny Points (max {maxDestinyPoints})
+                                    Destiny Points (max {maxDestinyPoints} at level {maxLevel})
                                     <TextInput
                                         id="destiny_pts"
                                         placeholder={minDestinyPoints.toString()}
@@ -214,28 +204,29 @@ export default function Options({ destinyTreesSelectedLength = 0 } : { destinyTr
                     </div>
                 </div>
 
-                <hr/>
-
-                <div className="flex flex-wrap items-center">
-                    <div className="w-40">
-                        <span>Number of multiclass :</span>
-                    </div>
-                    <div className="flex flex-wrap flex-col grow gap-2">
-                        <div className="flex flex-wrap justify-center gap-3 p-3 grow rounded-lg ">
-                            { Object.keys(numberAllowedClass).map((option: string, k: number) =>
-                                <Label key={k} htmlFor={`class_${k}`} className="flex items-center gap-2">
-                                    <Checkbox
-                                        className="w-4 h-4 rounded-sm bg-gray-300 dark:bg-gray-600 text-orange-500 focus:ring-orange-500 dark:focus:ring-orange-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:border-gray-500"
-                                        checked={numberAllowedClass[+option]}
-                                        id={`class_${k}`}
-                                        onChange={(e : ChangeEvent<HTMLInputElement>) => setNumberAllowedClass({...numberAllowedClass, [+option]: e.target.checked})}
-                                    />
-                                    { option } {+option > 1 ? 'classes' : 'class'}
-                                </Label>
-                            ) }
+                { capstoneTree !== 'class_capstone' ? (
+                    <>
+                        <hr/>
+                        <div className="flex flex-wrap items-center">
+                            <div className="w-40">
+                                <span>Number of multiclass :</span>
+                            </div>
+                            <div className="flex flex-wrap gap-3 m-auto">
+                                { Object.keys(numberAllowedClass).map((option: string, k: number) =>
+                                    <Label key={k} htmlFor={`class_${k}`} className="flex items-center gap-2">
+                                        <Checkbox
+                                            className="w-4 h-4 rounded-sm bg-gray-300 dark:bg-gray-600 text-orange-500 focus:ring-orange-500 dark:focus:ring-orange-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:border-gray-500"
+                                            checked={numberAllowedClass[+option]}
+                                            id={`class_${k}`}
+                                            onChange={(e : ChangeEvent<HTMLInputElement>) => setNumberAllowedClass({...numberAllowedClass, [+option]: e.target.checked})}
+                                        />
+                                        { option } {+ option > 1 ? 'classes' : 'class'}
+                                    </Label>
+                                ) }
+                            </div>
                         </div>
-                    </div>
-                </div>
+                    </>
+                ) : null }
 
                 <hr/>
 
@@ -243,8 +234,8 @@ export default function Options({ destinyTreesSelectedLength = 0 } : { destinyTr
                     <div className="w-40">
                         <span>Ability score weight :</span>
                     </div>
-                    <div className="flex flex-wrap flex-col grow gap-2">
-                        <div className="flex flex-wrap justify-center gap-3 p-3 grow rounded-lg ">
+                    <div className="flex m-auto">
+                        <div className="flex flex-wrap justify-center gap-2">
                             <Label htmlFor="no_weight" className="flex items-center gap-2">
                                 <Radio id="no_weight"
                                        value="no_weight"
@@ -253,7 +244,7 @@ export default function Options({ destinyTreesSelectedLength = 0 } : { destinyTr
                                        name="weight"
                                        className="h-4 w-4 border border-gray-300 text-orange-500 dark:ring-offset-gray-700 focus:ring-2 focus:ring-orange-500 dark:border-gray-500 dark:bg-gray-700 dark:focus:bg-orange-500 dark:focus:ring-orange-500 "
                                 />
-                                Don't apply weight, let there be chaos
+                                Don&#39;t apply weight, let there be chaos
                             </Label>
                             <Label htmlFor="weight_main" className="flex items-center gap-2">
                                 <Radio id="weight_main"
