@@ -55,7 +55,6 @@ export default function Races({races, editRaces, displayNames}: {
     editRaces: Dispatch<Races>,
     displayNames: boolean
 }) {
-
     const toggle = (e: ChangeEvent<HTMLInputElement>, type?: string, k?: number): void => {
         let toggledClasses: [string, Race[]][] = JSON.parse(JSON.stringify(Object.entries(races)))
 

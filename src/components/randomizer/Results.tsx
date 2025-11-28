@@ -10,10 +10,6 @@ export default function Options() {
         setDisplayNames(!displayNames)
     }
 
-    useEffect(() => {
-        setDisplayNames(!localStorage.getItem("displayNames") || localStorage.getItem("displayNames") === "true");
-    }, []);
-
     return (
         <>
             <h3 className="mb-2 font-semibold text-gray-900 dark:text-white">Options</h3>

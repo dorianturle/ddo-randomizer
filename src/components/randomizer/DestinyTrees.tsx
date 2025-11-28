@@ -1,6 +1,6 @@
 import {ChangeEvent, Dispatch} from "react";
 import {Checkbox, Label} from "flowbite-react";
-import type {DestinyTree} from "@/types/destiny_trees";import {isSelected} from "@/utils";
+import type {DestinyTree} from "@/types/destiny_trees";
 
 export function Options({ data, setChange } : { data : DestinyTree[], setChange: (e: ChangeEvent<HTMLInputElement>, k?: number) => void }) {
     return (
@@ -25,7 +25,6 @@ export default function DestinyTrees({destinyTrees, editDestinyTrees}: {
     destinyTrees: Array<DestinyTree>,
     editDestinyTrees: Dispatch<Array<DestinyTree>>
 }) {
-
     const toggle = (e: ChangeEvent<HTMLInputElement>, k?: number) => {
         let toggledDestinyTrees: Array<DestinyTree> = JSON.parse(JSON.stringify(destinyTrees))
 
