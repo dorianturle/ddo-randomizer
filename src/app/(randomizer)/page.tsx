@@ -14,6 +14,8 @@ import DestinyTrees from '@/components/randomizer/DestinyTrees'
 import RandomizerOptions from '@/components/randomizer/RandomizerOptions'
 import StartingStats from "@/components/randomizer/StartingStats";
 
+import { randomize } from "@/utils/randomizer";
+
 import type { Races as RacesType } from "@/types/races"
 import type { Classes as ClassesType } from "@/types/classes"
 import type { Alignment as AlignmentType } from "@/types/alignments"
@@ -32,6 +34,8 @@ export default function Randomizer() {
     const [universalTrees, setUniversalTrees] = useState<null|Array<UniversalTreeType>>(null)
     const [destinyTrees, setDestinyTrees] = useState<null|Array<DestinyTreeType>>(null)
     const [randomizerOptions, setRandomizerOptions] = useState<null|RandomizerOptionsType>(null)
+
+    const [results, setResults] = useState<[]>([])
 
     const fetchLocalStorage = useEffectEvent(() => {
         setDisplayNames(!localStorage.getItem("displayNames") || localStorage.getItem("displayNames") === "true")
@@ -75,15 +79,16 @@ export default function Randomizer() {
 
                 {destinyTrees ? <DestinyTrees destinyTrees={destinyTrees} editDestinyTrees={setDestinyTrees} /> : <Loading name="destiny trees" />}
 
-                { JSON.stringify(randomizerOptions) }
                 {randomizerOptions && destinyTrees
                     ? <RandomizerOptions randomizerOptions={randomizerOptions} editRandomizerOptions={setRandomizerOptions} destinyTreesSelectedLength={destinyTrees.filter((dT: DestinyTreeType) => dT.isBought).length} />
                     : <Loading name="randomizer options" />}
 
                 <ButtonGroup className="rounded-lg justify-center shadow-none">
-                    <Button outline color="cyan" disabled={ !isDataLoaded }>Randomize !</Button>
+                    <Button outline color="cyan" disabled={ !isDataLoaded } onClick={() => randomize()}>Randomize !</Button>
                     <Button outline color="pink" disabled={ !isDataLoaded }>Clear</Button>
                 </ButtonGroup>
+
+                <>Tab</>
             </div>
         </div>
     );

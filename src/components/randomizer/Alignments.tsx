@@ -1,7 +1,7 @@
 import {ChangeEvent, Dispatch} from "react";
 import {Checkbox, Label} from "flowbite-react";
 import type {Alignment} from "@/types/alignments";
-import {isSelected, filterCategory} from "@/utils";
+import {isSelected, filterCategory} from "@/utils/randomizer";
 
 export function Options({ data, setChange } : { data : Alignment[], setChange: (e: ChangeEvent<HTMLInputElement>, category?: string, k?: number) => void }) {
     return (

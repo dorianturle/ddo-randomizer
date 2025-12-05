@@ -1,4 +1,3 @@
-
 export function isSelected<T extends {selected?: boolean; isBought?: boolean}>(data: T[]): boolean {
     const copiedData : Array<T> = JSON.parse(JSON.stringify(data))
 
@@ -7,7 +6,7 @@ export function isSelected<T extends {selected?: boolean; isBought?: boolean}>(d
 
 export function filterCategory<T extends {category: string}>(data: T[], category: string): Array<T> {
     const copiedData : Array<T> = JSON.parse(JSON.stringify(data))
-    
+
     return copiedData.filter((c: T) => c.category === category)
 }
 /*
@@ -27,3 +26,7 @@ export function filterCategory<T extends {category: string}>(data: T[], category
         editRaces(Object.fromEntries(toggledClasses) as Races)
     }
 * */
+
+export function randomize() {
+    
+}

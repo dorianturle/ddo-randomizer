@@ -2,7 +2,7 @@ import {ChangeEvent, Dispatch, useEffect, useLayoutEffect, useMemo, useState} fr
 import {Checkbox, Label, Radio, TextInput, Tooltip} from "flowbite-react";
 import {HiExclamationCircle} from "react-icons/hi";
 import {Destiny, Enhancement, Multiclass, RandomizerOptions} from "@/types/randomizer_options";
-import {minRacialPoints, maxRacialPoints, maxLevel, minDestinyPointsCalc, maxDestinyPointsCalc} from "@/data/randomizer/randomizer_options";
+import {minRacialPoints, maxRacialPoints, maxLevel, minDestinyPointsCalc, maxDestinyPointsCalc} from "@/config/randomizer";
 
 export default function Options({randomizerOptions, editRandomizerOptions, destinyTreesSelectedLength = 0} : {
     randomizerOptions: RandomizerOptions,
@@ -131,8 +131,7 @@ export default function Options({randomizerOptions, editRandomizerOptions, desti
                                         type="number"
                                         min={minRacialPoints}
                                         max={maxRacialPoints}
-                                        /*value={randomizerOptions.enhancement.racial_points}*/
-                                        onChange={(e: ChangeEvent<HTMLInputElement>) => () => togglePoints(e, 'enhancement')}
+                                        onChange={(e: ChangeEvent<HTMLInputElement>) => togglePoints(e, 'enhancement')}
                                     />
                                 </Label>
                             </div>

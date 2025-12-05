@@ -1,5 +1,5 @@
 import {Destiny, Enhancement, RandomizerOptions} from "@/types/randomizer_options";
-import {minDestinyPointsCalc, minRacialPoints} from "@/data/randomizer/randomizer_options";
+import {minDestinyPointsCalc, minRacialPoints} from "@/config/randomizer";
 
 const randomizer_options: RandomizerOptions = {
     enhancement: {

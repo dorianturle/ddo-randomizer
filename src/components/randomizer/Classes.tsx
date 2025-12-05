@@ -1,7 +1,8 @@
 import {ChangeEvent, Dispatch, Fragment} from "react";
 import {Checkbox, Label, Tooltip} from "flowbite-react";
 import type {Class, Classes} from "@/types/classes";
-import {isSelected} from "@/utils";
+import {isSelected} from "@/utils/randomizer";
+import Image from "next/image";
 
 export function Icons ({ data, dataType, color, displayNames, setChange } : {
     data : Class[], dataType: string, color: string, displayNames: boolean, setChange: (e: ChangeEvent<HTMLInputElement>, type?: string, k?: number) => void
@@ -35,9 +36,14 @@ export function Icons ({ data, dataType, color, displayNames, setChange } : {
                         <Checkbox className="hidden" checked={type.selected} id={`${dataType}_class_${type.alias}`}
                                   onChange={e => setChange(e, dataType, k)}
                         />
-                        <Label htmlFor={`${dataType}_class_${type.alias}`} className="flex flex-col items-center">
-                            <img src={`/images/classes/${dataType}/${type.alias}_class_icon.png`} alt={type.name}
-                                 title={type.name} />
+                        <Label htmlFor={`${dataType}_class_${type.alias}`} className="flex flex-col items-center text-center w-14">
+                            <Image src={`/images/classes/${dataType}/${type.alias}_class_icon.png`}
+                                 alt={type.name}
+                                 title={type.name}
+                                 width={0}
+                                 height={0}
+                                 sizes="100vw"
+                            />
                             {displayNames ? <small>{type.name}</small> : null}
                         </Label>
                     </Tooltip>

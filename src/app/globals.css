@@ -59,3 +59,9 @@ label img {
 button[aria-label="Close"] {
     color: black !important;
 }
+
+@layer components {
+    .break-word-legacy {
+        word-break: break-word;
+    }
+}

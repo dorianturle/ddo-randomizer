@@ -1,17 +1,18 @@
 import {ChangeEvent, Dispatch, Fragment } from "react";
 import {Checkbox, Label, Tooltip} from "flowbite-react";
 import type {Race, Races, Stat} from "@/types/races";
-import {isSelected} from "@/utils";
+import {isSelected} from "@/utils/randomizer";
+import Image from "next/image"
 
 export function Icons({ data, dataType, color, displayNames, setChange } : { data : Race[], dataType: string, color: string, displayNames: boolean, setChange: (e: ChangeEvent<HTMLInputElement>, type?: string, k?: number) => void }) {
     return (
         <div className={`flex flex-col gap-2 p-2 grow ${color} ${dataType === 'free' ? 'rounded-l-lg' : dataType === 'iconic' ? 'rounded-r-lg' : ''}`}>
             <span className="text-center text-slate-900">{dataType.charAt(0).toUpperCase() + dataType.slice(1)}</span>
-            <div className="flex flex-wrap justify-center gap-2">
+            <div className="flex flex-wrap justify-center gap-3">
                 { data.map((type: Race, k: number) =>
                     <Tooltip key={k} content={
                         <div className="flex flex-col">
-                            <span>Name: <span className="text-blue-500">{type.name}</span></span>
+                            <span>Name : <span className="text-blue-500">{type.name}</span></span>
                             {type.statsMod ?
                                 <span>
                                     Stats modifiers :
@@ -24,7 +25,7 @@ export function Icons({ data, dataType, color, displayNames, setChange } : { dat
                                     )}
                                     {type.statsMod.loweredStats ? type.statsMod.loweredStats.map((stat: Stat, key: number) =>
                                         <Fragment key={key}>
-                                            {key === 0 && type.statsMod?.increasedStats.length ? ', ' : ' '}
+                                            {key === 0 && type.statsMod?.increasedStats.length ? ', ' : ''}
                                             {key > 0 && ', '}
                                             <span className="text-red-500">{stat.name}</span>
                                         </Fragment>
@@ -36,10 +37,13 @@ export function Icons({ data, dataType, color, displayNames, setChange } : { dat
                         <Checkbox className="hidden" checked={type.selected} id={`${dataType}_race_${type.alias}`}
                                   onChange={e => setChange(e, dataType, k)}
                         />
-                        <Label htmlFor={`${dataType}_race_${type.alias}`} className="flex flex-col items-center">
-                            <img src={`/images/races/${dataType}/${type.alias}_race_icon.png`}
-                                 alt={type.name}
-                                 title={type.name}
+                        <Label htmlFor={`${dataType}_race_${type.alias}`} className="flex flex-col items-center text-center w-12">
+                            <Image src={`/images/races/${dataType}/${type.alias}_race_icon.png`}
+                                   alt={type.name}
+                                   title={type.name}
+                                   width={0}
+                                   height={0}
+                                   sizes="100vw"
                             />
                             {displayNames ? <small>{type.name}</small> : null}
                         </Label>

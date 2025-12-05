@@ -1,7 +1,7 @@
 import {ChangeEvent, Dispatch} from "react";
 import {Checkbox, Label} from "flowbite-react";
 import type {UniversalTree} from "@/types/universal_trees";
-import {isSelected} from "@/utils";
+import {isSelected} from "@/utils/randomizer";
 
 export function Options({ data, setChange } : { data : UniversalTree[], setChange: (e: ChangeEvent<HTMLInputElement>, k?: number) => void }) {
     return (
