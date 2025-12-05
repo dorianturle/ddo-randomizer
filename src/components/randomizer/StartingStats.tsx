@@ -1,4 +1,4 @@
-import {ChangeEvent, Dispatch} from "react";
+import {ChangeEvent, Dispatch, memo} from "react";
 import {Label, Radio, Tooltip} from "flowbite-react";
 import type {Stat} from "@/types/stats";
 import {HiInformationCircle} from "react-icons/hi";
@@ -19,7 +19,7 @@ export function Options({ data, setChange } : { data : Stat[], setChange: (e: Ch
     );
 }
 
-export default function StartingStats({stats, editStats}: {
+export default memo(function StartingStats({stats, editStats}: {
     stats: Array<Stat>,
     editStats: Dispatch<Array<Stat>>
 }) {
@@ -47,4 +47,4 @@ export default function StartingStats({stats, editStats}: {
             </div>
         </div>
     );
-}
+})

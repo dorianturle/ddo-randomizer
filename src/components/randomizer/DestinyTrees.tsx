@@ -21,7 +21,7 @@ export function Options({ data, setChange } : { data : DestinyTree[], setChange:
     );
 }
 
-export default function DestinyTrees({destinyTrees, editDestinyTrees}: {
+export default (function DestinyTrees({destinyTrees, editDestinyTrees}: {
     destinyTrees: Array<DestinyTree>,
     editDestinyTrees: Dispatch<Array<DestinyTree>>
 }) {
@@ -46,4 +46,4 @@ export default function DestinyTrees({destinyTrees, editDestinyTrees}: {
             </div>
         </div>
     );
-}
+})

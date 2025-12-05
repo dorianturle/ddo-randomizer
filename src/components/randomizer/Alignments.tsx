@@ -1,4 +1,4 @@
-import {ChangeEvent, Dispatch} from "react";
+import {ChangeEvent, Dispatch, memo} from "react";
 import {Checkbox, Label} from "flowbite-react";
 import type {Alignment} from "@/types/alignments";
 import {isSelected, filterCategory} from "@/utils/randomizer";
@@ -20,7 +20,7 @@ export function Options({ data, setChange } : { data : Alignment[], setChange: (
     );
 }
 
-export default function Alignments({alignments, editAlignments}: {
+export default memo(function Alignments({alignments, editAlignments}: {
     alignments: Array<Alignment>,
     editAlignments: Dispatch<Array<Alignment>>
 }) {
@@ -69,4 +69,4 @@ export default function Alignments({alignments, editAlignments}: {
             </div>
         </div>
     );
-}
+})

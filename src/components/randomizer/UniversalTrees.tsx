@@ -1,4 +1,4 @@
-import {ChangeEvent, Dispatch} from "react";
+import {ChangeEvent, Dispatch, memo} from "react";
 import {Checkbox, Label} from "flowbite-react";
 import type {UniversalTree} from "@/types/universal_trees";
 import {isSelected} from "@/utils/randomizer";
@@ -20,7 +20,7 @@ export function Options({ data, setChange } : { data : UniversalTree[], setChang
     );
 }
 
-export default function UniversalTrees({universalTrees, editUniversalTrees}: {
+export default memo(function UniversalTrees({universalTrees, editUniversalTrees}: {
     universalTrees: Array<UniversalTree>,
     editUniversalTrees: Dispatch<Array<UniversalTree>>
 }) {
@@ -53,4 +53,4 @@ export default function UniversalTrees({universalTrees, editUniversalTrees}: {
             </div>
         </div>
     );
-}
+})

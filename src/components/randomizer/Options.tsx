@@ -1,6 +1,6 @@
-import { Dispatch } from "react";
+import {Dispatch, memo} from "react";
 
-export default function Options({ displayNames, editDisplay } : {displayNames: boolean, editDisplay : Dispatch<boolean>}) {
+export default memo(function Options({ displayNames, editDisplay } : {displayNames: boolean, editDisplay : Dispatch<boolean>}) {
     const onChangeDisplayNames = () => {
         localStorage.setItem("displayNames", (!displayNames).toString())
         editDisplay(!displayNames)
@@ -24,4 +24,4 @@ export default function Options({ displayNames, editDisplay } : {displayNames: b
             </ul>
         </div>
     );
-}
+})

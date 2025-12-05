@@ -1,6 +1,6 @@
 "use client"
 
-import {useEffect, useEffectEvent, useState} from "react";
+import {memo, useEffect, useEffectEvent, useState} from "react";
 import {Button, ButtonGroup} from "flowbite-react";
 import Loading from "@/app/(randomizer)/loading";
 
@@ -23,19 +23,20 @@ import type { Stat as StatType } from "@/types/stats"
 import type { UniversalTree as UniversalTreeType } from "@/types/universal_trees"
 import type { DestinyTree as DestinyTreeType } from "@/types/destiny_trees"
 import type { RandomizerOptions as RandomizerOptionsType } from "@/types/randomizer_options"
+import type { Results as ResultsType } from "@/types/results"
 
 export default function Randomizer() {
     const [isDataLoaded, setIsDataLoaded] = useState<boolean>(false)
     const [displayNames, setDisplayNames] = useState<boolean>(false)
     const [races, setRaces] = useState<null|RacesType>(null)
     const [classes, setClasses] = useState<null|ClassesType>(null)
-    const [alignments, setAlignments] = useState<null|Array<AlignmentType>>(null)
-    const [stats, setStats] = useState<null|Array<StatType>>(null)
-    const [universalTrees, setUniversalTrees] = useState<null|Array<UniversalTreeType>>(null)
-    const [destinyTrees, setDestinyTrees] = useState<null|Array<DestinyTreeType>>(null)
+    const [alignments, setAlignments] = useState<Array<AlignmentType>>([])
+    const [stats, setStats] = useState<Array<StatType>>([])
+    const [universalTrees, setUniversalTrees] = useState<Array<UniversalTreeType>>([])
+    const [destinyTrees, setDestinyTrees] = useState<Array<DestinyTreeType>>([])
     const [randomizerOptions, setRandomizerOptions] = useState<null|RandomizerOptionsType>(null)
 
-    const [results, setResults] = useState<[]>([])
+    const [results, setResults] = useState<Array<ResultsType>>([])
 
     const fetchLocalStorage = useEffectEvent(() => {
         setDisplayNames(!localStorage.getItem("displayNames") || localStorage.getItem("displayNames") === "true")
@@ -83,12 +84,19 @@ export default function Randomizer() {
                     ? <RandomizerOptions randomizerOptions={randomizerOptions} editRandomizerOptions={setRandomizerOptions} destinyTreesSelectedLength={destinyTrees.filter((dT: DestinyTreeType) => dT.isBought).length} />
                     : <Loading name="randomizer options" />}
 
-                <ButtonGroup className="rounded-lg justify-center shadow-none">
-                    <Button outline color="cyan" disabled={ !isDataLoaded } onClick={() => randomize()}>Randomize !</Button>
-                    <Button outline color="pink" disabled={ !isDataLoaded }>Clear</Button>
-                </ButtonGroup>
+                {races && classes && randomizerOptions ?
+                    <ButtonGroup className="rounded-lg justify-center shadow-none">
+                        <Button outline color="cyan" disabled={ !isDataLoaded }
+                                onClick={() => setResults(randomize(races, classes, alignments, stats, universalTrees, destinyTrees, randomizerOptions))}
+                        >
+                            Randomize !
+                        </Button>
+                        <Button outline color="pink" disabled={ !isDataLoaded }>Clear</Button>
+                    </ButtonGroup>
+                    : <Loading name="Buttons" />
+                }
 
-                <>Tab</>
+                <>{JSON.stringify(results)}</>
             </div>
         </div>
     );

@@ -1,10 +1,10 @@
-import {ChangeEvent, Dispatch, useEffect, useLayoutEffect, useMemo, useState} from "react";
+import {ChangeEvent, Dispatch, memo, useEffect, useLayoutEffect, useMemo, useState} from "react";
 import {Checkbox, Label, Radio, TextInput, Tooltip} from "flowbite-react";
 import {HiExclamationCircle} from "react-icons/hi";
 import {Destiny, Enhancement, Multiclass, RandomizerOptions} from "@/types/randomizer_options";
 import {minRacialPoints, maxRacialPoints, maxLevel, minDestinyPointsCalc, maxDestinyPointsCalc} from "@/config/randomizer";
 
-export default function Options({randomizerOptions, editRandomizerOptions, destinyTreesSelectedLength = 0} : {
+export default memo(function Options({randomizerOptions, editRandomizerOptions, destinyTreesSelectedLength = 0} : {
     randomizerOptions: RandomizerOptions,
     editRandomizerOptions: Dispatch<RandomizerOptions>,
     destinyTreesSelectedLength: number
@@ -265,4 +265,4 @@ export default function Options({randomizerOptions, editRandomizerOptions, desti
             </div>
         </div>
     );
-}
+})

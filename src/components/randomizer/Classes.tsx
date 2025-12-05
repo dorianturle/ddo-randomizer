@@ -1,4 +1,4 @@
-import {ChangeEvent, Dispatch, Fragment} from "react";
+import {ChangeEvent, Dispatch, Fragment, memo} from "react";
 import {Checkbox, Label, Tooltip} from "flowbite-react";
 import type {Class, Classes} from "@/types/classes";
 import {isSelected} from "@/utils/randomizer";
@@ -53,7 +53,7 @@ export function Icons ({ data, dataType, color, displayNames, setChange } : {
     );
 }
 
-export default function Classes({classes, editClasses, displayNames} : {
+export default memo(function Classes({classes, editClasses, displayNames} : {
     classes: Classes,
     editClasses: Dispatch<Classes>,
     displayNames: boolean
@@ -108,4 +108,4 @@ export default function Classes({classes, editClasses, displayNames} : {
             </div>
         </div>
     );
-}
+})
