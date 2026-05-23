@@ -1,6 +1,6 @@
-import {Dispatch, memo} from "react";
+import {Dispatch} from "react";
 
-export default memo(function Options({ displayNames, editDisplay } : {displayNames: boolean, editDisplay : Dispatch<boolean>}) {
+export default (function Options({ displayNames, editDisplay } : {displayNames: boolean, editDisplay : Dispatch<boolean>}) {
     const onChangeDisplayNames = () => {
         localStorage.setItem("displayNames", (!displayNames).toString())
         editDisplay(!displayNames)

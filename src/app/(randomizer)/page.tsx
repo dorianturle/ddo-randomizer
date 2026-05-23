@@ -14,7 +14,7 @@ import DestinyTrees from '@/components/randomizer/DestinyTrees'
 import RandomizerOptions from '@/components/randomizer/RandomizerOptions'
 import StartingStats from "@/components/randomizer/StartingStats";
 
-import { randomize } from "@/utils/randomizer";
+import { randomize } from "@/scripts/randomizer_calc";
 
 import type { Races as RacesType } from "@/types/races"
 import type { Classes as ClassesType } from "@/types/classes"
@@ -27,7 +27,7 @@ import type { Results as ResultsType } from "@/types/results"
 
 export default function Randomizer() {
     const [isDataLoaded, setIsDataLoaded] = useState<boolean>(false)
-    const [displayNames, setDisplayNames] = useState<boolean>(false)
+    const [displayNames, setDisplayNames] = useState<boolean>(!localStorage?.getItem("displayNames"))
     const [races, setRaces] = useState<null|RacesType>(null)
     const [classes, setClasses] = useState<null|ClassesType>(null)
     const [alignments, setAlignments] = useState<Array<AlignmentType>>([])
@@ -38,13 +38,7 @@ export default function Randomizer() {
 
     const [results, setResults] = useState<Array<ResultsType>>([])
 
-    const fetchLocalStorage = useEffectEvent(() => {
-        setDisplayNames(!localStorage.getItem("displayNames") || localStorage.getItem("displayNames") === "true")
-    })
-
     useEffect(() => {
-        fetchLocalStorage();
-
         Promise.all([
             fetch(`/api/races`, {cache: 'no-store'}).then(r => r.json()).then(r => setRaces(r)),
             fetch(`/api/classes`, {cache: 'no-store'}).then(r => r.json()).then(r => setClasses(r)),
@@ -91,7 +85,7 @@ export default function Randomizer() {
                         >
                             Randomize !
                         </Button>
-                        <Button outline color="pink" disabled={ !isDataLoaded }>Clear</Button>
+                        <Button outline color="pink" disabled={ !isDataLoaded } onClick={() => setResults([])}>Clear</Button>
                     </ButtonGroup>
                     : <Loading name="Buttons" />
                 }

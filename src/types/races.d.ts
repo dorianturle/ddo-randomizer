@@ -1,6 +1,10 @@
 export type Stat = {
-    name: string
-    value: number
+    name: string,
+    value: number,
+}
+
+export type BaseStats = Stat & {
+    weight: number
 }
 
 export type Race = {

@@ -18,4 +18,4 @@ type Destiny = {
     destiny_points: number;
 }
 
-type Multiclass = { [key: number]: boolean }
+type Multiclass = { [key: string]: boolean }

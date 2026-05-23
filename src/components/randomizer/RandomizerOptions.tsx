@@ -23,25 +23,23 @@ export default memo(function Options({randomizerOptions, editRandomizerOptions, 
         editRandomizerOptions(toggledRandomizerOptions as RandomizerOptions)
     }
 
+
     const togglePoints = (e: ChangeEvent<HTMLInputElement>, key: "enhancement"|"destiny") => {
         const minPoints = key === "enhancement" ? minRacialPoints : minDestinyPoints;
         const maxPoints = key === "enhancement" ? maxRacialPoints : maxDestinyPoints;
 
-        window.clearTimeout(timer);
+        if (e.target.value === '') {
+            e.target.value = (key === "enhancement" ? minRacialPoints : minDestinyPoints).toString()
+            return
+        } else if (parseInt(e.target.value) < minPoints) {
+            e.target.value = minPoints.toString();
+            return
+        } else if (parseInt(e.target.value) > maxPoints) {
+            e.target.value = maxPoints.toString();
+            return
+        }
 
-        const newTimer = window.setTimeout(() => {
-            if (e.target.value === '') {
-                e.target.value = '0'
-            } else if (parseInt(e.target.value) < minPoints) {
-                e.target.value = minPoints.toString();
-            } else if (parseInt(e.target.value) > maxPoints) {
-                e.target.value = maxPoints.toString();
-            }
-
-            toggle(parseInt(e.target.value), key, key === "enhancement" ? "racial_points" : "destiny_points")
-        }, 500)
-
-        setTimer(newTimer)
+        toggle(parseInt(e.target.value), key, key === "enhancement" ? "racial_points" : "destiny_points")
     }
 
     const minDestinyPoints: number = minDestinyPointsCalc + destinyTreesSelectedLength;
@@ -124,14 +122,15 @@ export default memo(function Options({randomizerOptions, editRandomizerOptions, 
                                 </div>
 
                                 <Label htmlFor="racial_pts" className="flex flex-wrap items-center justify-center gap-2 m-auto">
-                                    Racial Points (max {maxRacialPoints})
+                                    Racial Points ({minRacialPoints} - {maxRacialPoints})
                                     <TextInput
                                         id="racial_pts"
                                         placeholder={minRacialPoints.toString()}
                                         type="number"
                                         min={minRacialPoints}
                                         max={maxRacialPoints}
-                                        onChange={(e: ChangeEvent<HTMLInputElement>) => togglePoints(e, 'enhancement')}
+                                        defaultValue={minRacialPoints}
+                                        onBlur={(e: ChangeEvent<HTMLInputElement>) => togglePoints(e, 'enhancement')}
                                     />
                                 </Label>
                             </div>
@@ -182,14 +181,15 @@ export default memo(function Options({randomizerOptions, editRandomizerOptions, 
                                 </div>
 
                                 <Label htmlFor="destiny_pts" className="flex flex-wrap items-center justify-center gap-2 m-auto">
-                                    Destiny Points (max {maxDestinyPoints} at level {maxLevel})
+                                    Destiny Points ({minDestinyPoints} - {maxDestinyPoints} at level {maxLevel})
                                     <TextInput
                                         id="destiny_pts"
                                         placeholder={minDestinyPoints.toString()}
                                         type="number"
                                         min={minDestinyPoints}
                                         max={maxDestinyPoints}
-                                        onChange={(e: ChangeEvent<HTMLInputElement>) => togglePoints(e, 'destiny')}
+                                        defaultValue={minDestinyPoints}
+                                        onBlur={(e: ChangeEvent<HTMLInputElement>) => togglePoints(e, 'destiny')}
                                     />
                                 </Label>
                             </div>

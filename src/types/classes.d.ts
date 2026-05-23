@@ -15,8 +15,11 @@ export type Class = {
     selected: boolean;
     isArchetype: boolean;
     weightedStats: Array<Stat>;
-    enhancementTrees: Array<Tree>
+    enhancementTrees: Array<Tree>;
+    baseClass?: string;
 }
+
+export type ChosenClass = Omit<Class, 'selected' | 'isArchetype'> & { levels: number }
 
 export type Classes = {
     free: Class[],
