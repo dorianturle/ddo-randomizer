@@ -14,6 +14,10 @@ export default memo(function Options({randomizerOptions, editRandomizerOptions, 
     const toggle = (val: number|string|boolean, key1: keyof RandomizerOptions, key2?: keyof Enhancement|keyof Destiny|keyof Multiclass) => {
         let toggledRandomizerOptions: RandomizerOptions = JSON.parse(JSON.stringify(randomizerOptions));
 
+        if (key1 === "enhancement" && key2 === "randomize" && val === false) {
+            toggledRandomizerOptions[key1]["capstone"] = "no_capstone"
+        }
+
         if(key1 === "ability_score_weight") {
             toggledRandomizerOptions[key1] = val as "no_weight" | "weight_main" | "weight_all";
         } else if(key2) {
@@ -23,20 +27,16 @@ export default memo(function Options({randomizerOptions, editRandomizerOptions, 
         editRandomizerOptions(toggledRandomizerOptions as RandomizerOptions)
     }
 
-
     const togglePoints = (e: ChangeEvent<HTMLInputElement>, key: "enhancement"|"destiny") => {
         const minPoints = key === "enhancement" ? minRacialPoints : minDestinyPoints;
         const maxPoints = key === "enhancement" ? maxRacialPoints : maxDestinyPoints;
 
         if (e.target.value === '') {
             e.target.value = (key === "enhancement" ? minRacialPoints : minDestinyPoints).toString()
-            return
         } else if (parseInt(e.target.value) < minPoints) {
             e.target.value = minPoints.toString();
-            return
         } else if (parseInt(e.target.value) > maxPoints) {
             e.target.value = maxPoints.toString();
-            return
         }
 
         toggle(parseInt(e.target.value), key, key === "enhancement" ? "racial_points" : "destiny_points")
@@ -199,7 +199,7 @@ export default memo(function Options({randomizerOptions, editRandomizerOptions, 
                     </div>
                 </div>
 
-                {randomizerOptions.enhancement.capstone !== 'class_capstone' ? (
+                {randomizerOptions.enhancement.capstone !== 'class_capstone' || !randomizerOptions.enhancement.randomize ? (
                     <>
                         <hr/>
                         <div className="flex flex-wrap items-center">
