@@ -1,5 +1,5 @@
-export function filterSelected<T extends {selected?: boolean; isBought?: boolean}>(data: Array<T>): Array<T> {
-    return JSON.parse(JSON.stringify(data)).filter((c: T) => c.selected || c.isBought || false)
+export function filterSelected<T extends {selected?: boolean; isBought?: boolean; core?: boolean}>(data: Array<T>): Array<T> {
+    return JSON.parse(JSON.stringify(data)).filter((c: T) => c.selected || c.isBought || c.core || false)
 }
 
 export function isSelected<T extends {selected?: boolean; isBought?: boolean}>(data: T[]): boolean {

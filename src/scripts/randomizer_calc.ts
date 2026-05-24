@@ -1,14 +1,21 @@
 import type {BaseStats, Race, Races as RacesType} from "@/types/races";
 import {ChosenClass, Class, Classes as ClassesType, Stat, Tree} from "@/types/classes";
 import type {Alignment, Alignment as AlignmentType} from "@/types/alignments";
-import type {Stat as StatType} from "@/types/stats";
-import type {UniversalTree as UniversalTreeType} from "@/types/universal_trees";
-import type {DestinyTree as DestinyTreeType} from "@/types/destiny_trees";
+import type {AbilityPoints as AbilityPointsType} from "@/types/ability_points";
+import {ChosenUniversalTree, UniversalTree as UniversalTreeType} from "@/types/universal_trees";
+import {ChosenDestinyTree, DestinyTree as DestinyTreeType} from "@/types/destiny_trees";
 import type {RandomizerOptions as RandomizerOptionsType} from "@/types/randomizer_options";
 import type {Results as ResultsType} from "@/types/results";
 
 import { filterSelected } from "@/utils/randomizer";
-import {base_stats} from "@/config/randomizer";
+import {baseStats, enhancementPoints} from "@/config/randomizer";
+
+function groupBy(xs: any, key: any) {
+    return xs.reduce((rv: any, x: any) => {
+        (rv[x[key]] = rv[x[key]] || []).push(x);
+        return rv;
+    }, {});
+}
 
 function initCAR(classes: Array<Class>, alignment: Array<Alignment>, race: Array<Race>): [Array<Class>, Array<Alignment>, Array<Race>] {
     return [JSON.parse(JSON.stringify(classes)), JSON.parse(JSON.stringify(alignment)), JSON.parse(JSON.stringify(race))]
@@ -129,12 +136,12 @@ function rollClasses(chosenClasses: ChosenClass[], chosenRace:Race, classesSelec
     return chosenClasses.sort((a,b) => b.levels - a.levels)
 }
 
-function rollStats(chosenStats: BaseStats[], stats: StatType[], chosenRace: Race, chosenClasses: ChosenClass[], randomizerOptions: RandomizerOptionsType): BaseStats[] {
-    let startingStats : StatType = stats.filter(stat => stat.selected)[0];
+function rollStats(chosenStats: BaseStats[], stats: AbilityPointsType[], chosenRace: Race, chosenClasses: ChosenClass[], randomizerOptions: RandomizerOptionsType): BaseStats[] {
+    let startingAbilityPoints : AbilityPointsType = stats.filter(stat => stat.selected)[0];
     let finalStartStats: number = 28
-    if (chosenRace.name === 'drow' && startingStats.name !== '28') {
-        finalStartStats = parseInt(startingStats.name) - 4;
-    } else if (chosenRace.isIconic && startingStats.name === '28') {
+    if (chosenRace.name === 'drow' && startingAbilityPoints.name !== '28') {
+        finalStartStats = parseInt(startingAbilityPoints.name) - 4;
+    } else if (chosenRace.isIconic && startingAbilityPoints.name === '28') {
         finalStartStats = 32
     }
 
@@ -216,11 +223,222 @@ function rollStats(chosenStats: BaseStats[], stats: StatType[], chosenRace: Race
     return chosenStats;
 }
 
+function rollUniversalTrees(chosenEnhancementTrees: ChosenUniversalTree[], chosenRace: Race, chosenClasses: ChosenClass[], universalTrees: UniversalTreeType[], randomizerOptions: RandomizerOptionsType): ChosenUniversalTree[] {
+    const universalTreeCopy = filterSelected<UniversalTreeType>(universalTrees)
+        .map(value => ({value, sort: Math.random()}))
+        .sort((a, b) => a.sort - b.sort)
+        .map(({value}) => value)
+        .slice(0, Math.floor(Math.random() * (3 - 1 + 1) + 1));
+
+    let capstone_class_tree_idx = -1, capstone_universal_tree_idx = -1;
+    if (randomizerOptions.enhancement.capstone === "class_capstone") {
+        capstone_class_tree_idx = Math.floor(Math.random() * 3)
+    } else if (randomizerOptions.enhancement.capstone === "universal_capstone") {
+        capstone_universal_tree_idx = Math.floor(Math.random() * (universalTreeCopy.length - 1 + 1))
+    }
+
+    chosenEnhancementTrees =
+        chosenClasses
+            .flatMap((_class, idx) => {
+                if (!_class.enhancementTrees) { return [] }
+
+                _class.enhancementTrees
+                    .map(value => ({ value, sort: Math.random() }))
+                    .sort((a, b) => a.sort - b.sort)
+                    .map(({ value }) => value)
+
+                // because sorcerer has tree restrictions, we have to randomly remove one for each set of opposites before the weight calc
+                if (_class.alias === 'sorcerer') {
+                    for (let itemIndex = 0; itemIndex < _class.enhancementTrees.length; itemIndex++) {
+                        switch (_class.enhancementTrees[itemIndex].alias) {
+                            case "fire_savant":
+                                _class.enhancementTrees = _class.enhancementTrees.filter(tree=> !["water_savant"].includes(tree.alias))
+                                break;
+                            case "water_savant":
+                                _class.enhancementTrees = _class.enhancementTrees.filter(tree=> !["fire_savant"].includes(tree.alias))
+                                break;
+                            case "earth_savant":
+                                _class.enhancementTrees = _class.enhancementTrees.filter(tree=> !["air_savant"].includes(tree.alias));
+                                break;
+                            case "air_savant":
+                                _class.enhancementTrees = _class.enhancementTrees.filter(tree=> !["earth_savant"].includes(tree.alias))
+                                break;
+
+                            default:
+                                break;
+                        }
+                    }
+                }
+
+                return _class.enhancementTrees.map((tree, treeIndex) => {
+                    return {
+                        ...tree,
+                        className: _class.name,
+                        levels: _class.levels,
+                        weight: (capstone_class_tree_idx === treeIndex) ? 666 : (chosenClasses.length - idx + ((treeIndex + 1) * Math.floor(_class.levels / 0.90)))
+                    }
+                })
+            })
+            // remove duplicates
+            .filter((tree, idx, self) => idx === self.findIndex(t => t.alias === tree.alias));
+
+    chosenEnhancementTrees.unshift({ name: chosenRace.name, alias: "racial", className: "Racial", levels: 20, value: randomizerOptions.enhancement.racial_points, weight: Math.floor(Math.random() * 20) })
+
+    chosenEnhancementTrees.unshift(
+        ...[
+            ...universalTreeCopy
+                .map((universal_tree, idx) => ({
+                    ...universal_tree,
+                    className: "Universal",
+                    levels: 20,
+                    value: 0,
+                    weight: capstone_universal_tree_idx === idx ? 666 : Math.floor(Math.random() * 20) + 1 + idx
+                })),
+        ]
+    )
+
+    let copyEnhancementTrees: ChosenUniversalTree[] = [];
+    let cumulativeTreeWeights: number[] = []
+    let maxEnhancementTreeValue = 41 + Math.floor(Math.random() * 4 + 1) // 42 to 45 in a single tree
+
+    do {
+        copyEnhancementTrees = JSON.parse(JSON.stringify(chosenEnhancementTrees));
+        // calculate total tree weight
+        cumulativeTreeWeights = [];
+        for (let i = 0; i < copyEnhancementTrees.length; i += 1) {
+            cumulativeTreeWeights[i] = copyEnhancementTrees[i].weight + (cumulativeTreeWeights[i - 1] || 0);
+        }
+        let maxCumulativeTreeWeight = cumulativeTreeWeights[cumulativeTreeWeights.length - 1];
+
+        let attributed, picked_trees : any = [], randomNumber;
+        for (let pts = 1; pts <= enhancementPoints; pts++) {
+            attributed = false;
+            randomNumber = maxCumulativeTreeWeight * Math.random();
+
+            // apply weight
+            for (let itemIndex = 0; itemIndex < copyEnhancementTrees.length; itemIndex++) {
+                if (picked_trees.length === 6 && copyEnhancementTrees[itemIndex].alias !== "racial" && !picked_trees.includes(copyEnhancementTrees[itemIndex].alias)) {
+                    continue;
+                }
+
+                if (
+                    (copyEnhancementTrees[itemIndex].value >= maxEnhancementTreeValue)
+                    || (copyEnhancementTrees[itemIndex].value >= 10 && copyEnhancementTrees[itemIndex].levels <= 2)
+                    || (copyEnhancementTrees[itemIndex].value >= 20 && copyEnhancementTrees[itemIndex].levels <= 4)
+                ) {
+                    //recalculate weights
+                    copyEnhancementTrees[itemIndex].weight = 0;
+                    cumulativeTreeWeights = [];
+                    for (let i = 0; i < copyEnhancementTrees.length; i += 1) {
+                        cumulativeTreeWeights[i] = copyEnhancementTrees[i].weight + (cumulativeTreeWeights[i - 1] || 0);
+                    }
+                    maxCumulativeTreeWeight = cumulativeTreeWeights[cumulativeTreeWeights.length - 1];
+                    randomNumber = maxCumulativeTreeWeight * Math.random();
+
+                    continue;
+                }
+
+                if (cumulativeTreeWeights[itemIndex] >= randomNumber) {
+                    copyEnhancementTrees[itemIndex].value++;
+                    attributed = true;
+
+                    if(copyEnhancementTrees[itemIndex].alias !== "racial" && !picked_trees.includes(copyEnhancementTrees[itemIndex].alias)) {
+                        picked_trees.push(copyEnhancementTrees[itemIndex].alias);
+                    }
+                    break;
+                }
+            }
+
+            if (attributed === false) {
+                pts--;
+            }
+        }
+    } while (randomizerOptions.enhancement.capstone !== "no_capstone" && !copyEnhancementTrees.some((ce: ChosenUniversalTree) => ce.value === maxEnhancementTreeValue))
+
+    return copyEnhancementTrees.filter((ct: any) => ct.value !== 0 || ct.alias === "racial").sort((a: any, b: any) => b.value - a.value)
+}
+
+function rollDestinyTrees(chosenDestinyTrees: ChosenDestinyTree[], destinyTrees: DestinyTreeType[], randomizerOptions: RandomizerOptionsType) {
+    let tier5_destiny_tree_idx : number = -1;
+    if (randomizerOptions.destiny.tier5 === "with_tier5") {
+        tier5_destiny_tree_idx = Math.floor(Math.random() * 3)
+    }
+
+    chosenDestinyTrees = filterSelected<DestinyTreeType>(destinyTrees)
+        .map(value => ({value, sort: Math.random()}))
+        .sort((a, b) => a.sort - b.sort)
+        .map(({value}) => value)
+        .slice(0, 3)
+        .flatMap((ut, idx) => ({
+            ...ut,
+            value: 0,
+            weight: tier5_destiny_tree_idx === idx ? 666 : 1 + idx / 2
+        }));
+
+
+    let copyDestinyTrees: ChosenDestinyTree[] = [];
+    let cumulativeTreeWeights : number[] = [];
+    let maxDestinyTreeValue = 31 + Math.floor(Math.random() * 6 + 1) // 32 to 37 in a single tree
+
+    do {
+        copyDestinyTrees = JSON.parse(JSON.stringify(chosenDestinyTrees));
+        // calculate total tree weight
+        cumulativeTreeWeights = [];
+        for (let i = 0; i < copyDestinyTrees.length; i += 1) {
+            cumulativeTreeWeights[i] = copyDestinyTrees[i].weight + (cumulativeTreeWeights[i - 1] || 0);
+        }
+        let maxCumulativeTreeWeight = cumulativeTreeWeights[cumulativeTreeWeights.length - 1];
+
+        let attributed, picked_trees : any = [], randomNumber;
+        for (let pts = 1; pts <= randomizerOptions.destiny.destiny_points; pts++) {
+            attributed = false;
+            randomNumber = maxCumulativeTreeWeight * Math.random();
+
+            // apply weight
+            for (let itemIndex = 0; itemIndex < copyDestinyTrees.length; itemIndex++) {
+                if (picked_trees.length === 6 && copyDestinyTrees[itemIndex].alias !== "racial" && !picked_trees.includes(copyDestinyTrees[itemIndex].alias)) {
+                    continue;
+                }
+
+                if (copyDestinyTrees[itemIndex].value >= maxDestinyTreeValue) {
+                    //recalculate weights
+                    copyDestinyTrees[itemIndex].weight = 0;
+                    cumulativeTreeWeights = [];
+                    for (let i = 0; i < copyDestinyTrees.length; i += 1) {
+                        cumulativeTreeWeights[i] = copyDestinyTrees[i].weight + (cumulativeTreeWeights[i - 1] || 0);
+                    }
+                    maxCumulativeTreeWeight = cumulativeTreeWeights[cumulativeTreeWeights.length - 1];
+                    randomNumber = maxCumulativeTreeWeight * Math.random();
+
+                    continue;
+                }
+
+                if (cumulativeTreeWeights[itemIndex] >= randomNumber) {
+                    copyDestinyTrees[itemIndex].value++;
+                    attributed = true;
+
+                    if(copyDestinyTrees[itemIndex].alias !== "racial" && !picked_trees.includes(copyDestinyTrees[itemIndex].alias)) {
+                        picked_trees.push(copyDestinyTrees[itemIndex].alias);
+                    }
+                    break;
+                }
+            }
+
+            if (attributed === false) {
+                pts--;
+            }
+        }
+    } while (randomizerOptions.destiny.tier5 === "with_tier5" && !copyDestinyTrees.some((ce: any) => ce.value === maxDestinyTreeValue))
+
+    return copyDestinyTrees.filter((ct: any) => ct.value !== 0).sort((a: any, b: any) => b.value - a.value);
+}
+
 export function randomize(
+    results: ResultsType[],
     races: RacesType,
     classes: ClassesType,
     alignments: Array<AlignmentType>,
-    stats: Array<StatType>,
+    abilityPoints: Array<AbilityPointsType>,
     universalTrees: Array<UniversalTreeType>,
     destinyTrees: Array<DestinyTreeType>,
     randomizerOptions: RandomizerOptionsType,
@@ -300,14 +518,28 @@ export function randomize(
     let chosenClasses: ChosenClass[] = rollClasses([], chosenRace, classesSelectedCopy, randomizerOptions);
 
     // 9-14 => 1pt ; 15-16 => 2pts ; 17-18 => 3pts. racials are applied AFTER.
-    let chosenStats : BaseStats[] = rollStats(JSON.parse(JSON.stringify(base_stats)), stats, chosenRace, chosenClasses, randomizerOptions);
+    let chosenStats : BaseStats[] = rollStats(JSON.parse(JSON.stringify(baseStats)), abilityPoints, chosenRace, chosenClasses, randomizerOptions);
 
-    /*console.log(races);
-    console.log(classes);
-    console.log(alignments);
-    console.log(stats);
-    console.log(universalTrees);
-    console.log(destinyTrees);
-    console.log(randomizerOptions);*/
-    return [alignmentIdx];
+    let chosenEnhancementTrees : ChosenUniversalTree[] = [];
+
+    if (randomizerOptions.enhancement.randomize) {
+        chosenEnhancementTrees = rollUniversalTrees(chosenEnhancementTrees, chosenRace, chosenClasses, universalTrees, randomizerOptions);
+    }
+
+    let chosenDestinyTrees : ChosenDestinyTree[] = [];
+
+    if (randomizerOptions.destiny.randomize) {
+        chosenDestinyTrees = rollDestinyTrees(chosenDestinyTrees, destinyTrees, randomizerOptions);
+    }
+
+    results = [{
+        race: chosenRace.name,
+        alignment: chosenAlignment.name,
+        classes: chosenClasses,
+        stats: chosenStats,
+        enhancement_trees: groupBy(chosenEnhancementTrees, 'className'),
+        destiny_trees: chosenDestinyTrees,
+    }, ...results]
+
+    return results;
 }

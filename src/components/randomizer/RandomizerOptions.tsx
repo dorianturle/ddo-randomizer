@@ -46,12 +46,14 @@ export default memo(function Options({randomizerOptions, editRandomizerOptions, 
     const maxDestinyPoints: number = maxDestinyPointsCalc + destinyTreesSelectedLength;
 
     useEffect(() => {
-        if (randomizerOptions.destiny.destiny_points < minDestinyPoints) {
-            toggle(minDestinyPoints, "destiny", "destiny_points");
-            (document.getElementById("destiny_pts") as HTMLInputElement).value = minDestinyPoints.toString()
-        } else if (randomizerOptions.destiny.destiny_points > maxDestinyPoints) {
-            toggle(maxDestinyPoints, "destiny", "destiny_points");
-            (document.getElementById("destiny_pts") as HTMLInputElement).value = maxDestinyPoints.toString()
+        if (randomizerOptions.destiny.randomize) {
+            if (randomizerOptions.destiny.destiny_points < minDestinyPoints) {
+                toggle(minDestinyPoints, "destiny", "destiny_points");
+                (document.getElementById("destiny_pts") as HTMLInputElement).value = minDestinyPoints.toString()
+            } else if (randomizerOptions.destiny.destiny_points > maxDestinyPoints) {
+                toggle(maxDestinyPoints, "destiny", "destiny_points");
+                (document.getElementById("destiny_pts") as HTMLInputElement).value = maxDestinyPoints.toString()
+            }
         }
     }, [destinyTreesSelectedLength])
 

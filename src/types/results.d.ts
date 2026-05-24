@@ -1,14 +1,13 @@
-import type { Classes as ClassesType } from "./classes"
-import type { Stat as StatType } from "./stats"
-import type { UniversalTree as UniversalTreeType } from "./universal_trees"
+import type { ChosenClass } from "./classes"
+import type { BaseStats } from "./races"
+import type { ChosenUniversalTree } from "./universal_trees"
+import type {ChosenDestinyTree} from "./destiny_trees";
 
 export type Results = {
     race: string;
     alignment: string;
-    classes: Array<ClassesType>;
-    stats: Array<StatType>;
-    enhancement_trees: {
-        open: boolean;
-        trees: Array<UniversalTreeType>;
-    }
+    classes: Array<ChosenClass>;
+    stats: Array<BaseStats>;
+    enhancement_trees: Array<ChosenUniversalTree[]>,
+    destiny_trees: Array<ChosenDestinyTree>
 }

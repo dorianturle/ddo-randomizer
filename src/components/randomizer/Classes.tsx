@@ -8,7 +8,7 @@ export function Icons ({ data, dataType, color, displayNames, setChange } : {
     data : Class[], dataType: string, color: string, displayNames: boolean, setChange: (e: ChangeEvent<HTMLInputElement>, type?: string, k?: number) => void
 }) {
     return (
-        <div className={`flex flex-col gap-2 p-3 grow ${color} ${dataType === 'free' ? 'rounded-l-lg' : dataType === 'archetype' ? 'rounded-r-lg' : ''}`}>
+        <div className={`flex flex-col gap-2 py-3 grow ${color} ${dataType === 'free' ? 'rounded-l-lg' : dataType === 'archetype' ? 'rounded-r-lg' : ''}`}>
             <span className="text-center text-slate-900">{dataType.charAt(0).toUpperCase() + dataType.slice(1)}</span>
             <div className="flex flex-wrap justify-center gap-2">
                 { data.map((type, k) =>
@@ -36,7 +36,7 @@ export function Icons ({ data, dataType, color, displayNames, setChange } : {
                         <Checkbox className="hidden" checked={type.selected} id={`${dataType}_class_${type.alias}`}
                                   onChange={e => setChange(e, dataType, k)}
                         />
-                        <Label htmlFor={`${dataType}_class_${type.alias}`} className="flex flex-col items-center text-center w-14">
+                        <Label htmlFor={`${dataType}_class_${type.alias}`} className="flex flex-col items-center text-center w-15">
                             <Image src={`/images/classes/${dataType}/${type.alias}_class_icon.png`}
                                  alt={type.name}
                                  title={type.name}

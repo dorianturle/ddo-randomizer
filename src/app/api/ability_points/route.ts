@@ -1,4 +1,4 @@
-import { Stat } from "@/types/stats"
+import { Stat } from "@/types/ability_points"
 
 const stats_list: number[] = [28, 32, 34, 36];
 

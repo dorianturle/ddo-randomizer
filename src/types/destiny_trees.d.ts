@@ -5,3 +5,8 @@ export type DestinyTree = {
     isBought?: boolean,
     upcoming: boolean,
 }
+
+export type ChosenDestinyTree = DestinyTree & {
+    value: number;
+    weight: number;
+}

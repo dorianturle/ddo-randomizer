@@ -12,14 +12,15 @@ import Alignments from '@/components/randomizer/Alignments'
 import UniversalTrees from '@/components/randomizer/UniversalTrees'
 import DestinyTrees from '@/components/randomizer/DestinyTrees'
 import RandomizerOptions from '@/components/randomizer/RandomizerOptions'
-import StartingStats from "@/components/randomizer/StartingStats";
+import AbilityPoints from "@/components/randomizer/AbilityPoints";
+import Results from "@/components/randomizer/Results";
 
 import { randomize } from "@/scripts/randomizer_calc";
 
 import type { Races as RacesType } from "@/types/races"
 import type { Classes as ClassesType } from "@/types/classes"
 import type { Alignment as AlignmentType } from "@/types/alignments"
-import type { Stat as StatType } from "@/types/stats"
+import type { AbilityPoints as AbilityPointsType } from "@/types/ability_points"
 import type { UniversalTree as UniversalTreeType } from "@/types/universal_trees"
 import type { DestinyTree as DestinyTreeType } from "@/types/destiny_trees"
 import type { RandomizerOptions as RandomizerOptionsType } from "@/types/randomizer_options"
@@ -27,11 +28,11 @@ import type { Results as ResultsType } from "@/types/results"
 
 export default function Randomizer() {
     const [isDataLoaded, setIsDataLoaded] = useState<boolean>(false)
-    const [displayNames, setDisplayNames] = useState<boolean>(!localStorage?.getItem("displayNames"))
+    const [displayNames, setDisplayNames] = useState<boolean>(!localStorage?.getItem("displayNames") || localStorage.getItem("displayNames") === "true")
     const [races, setRaces] = useState<null|RacesType>(null)
     const [classes, setClasses] = useState<null|ClassesType>(null)
     const [alignments, setAlignments] = useState<Array<AlignmentType>>([])
-    const [stats, setStats] = useState<Array<StatType>>([])
+    const [abilityPoints, setAbilityPoints] = useState<Array<AbilityPointsType>>([])
     const [universalTrees, setUniversalTrees] = useState<Array<UniversalTreeType>>([])
     const [destinyTrees, setDestinyTrees] = useState<Array<DestinyTreeType>>([])
     const [randomizerOptions, setRandomizerOptions] = useState<null|RandomizerOptionsType>(null)
@@ -43,7 +44,7 @@ export default function Randomizer() {
             fetch(`/api/races`, {cache: 'no-store'}).then(r => r.json()).then(r => setRaces(r)),
             fetch(`/api/classes`, {cache: 'no-store'}).then(r => r.json()).then(r => setClasses(r)),
             fetch(`/api/alignments`, {cache: 'no-store'}).then(r => r.json()).then(r => setAlignments(r)),
-            fetch(`/api/stats`, {cache: 'no-store'}).then(r => r.json()).then(r => setStats(r)),
+            fetch(`/api/ability_points`, {cache: 'no-store'}).then(r => r.json()).then(r => setAbilityPoints(r)),
             fetch(`/api/universal_trees`, {cache: 'no-store'}).then(r => r.json()).then(r => setUniversalTrees(r)),
             fetch(`/api/destiny_trees`, {cache: 'no-store'}).then(r => r.json()).then(r => setDestinyTrees(r)),
             fetch(`/api/randomizer_options`, {cache: 'no-store'}).then(r => r.json()).then(r => setRandomizerOptions(r)),
@@ -68,7 +69,7 @@ export default function Randomizer() {
 
                 {alignments ? <Alignments alignments={alignments} editAlignments={setAlignments} /> : <Loading name="alignments" />}
 
-                {stats ? <StartingStats stats={stats} editStats={setStats} /> : <Loading name="stats" />}
+                {abilityPoints ? <AbilityPoints abilityPoints={abilityPoints} editAbilityPoints={setAbilityPoints} /> : <Loading name="ability points" />}
 
                 {universalTrees ? <UniversalTrees universalTrees={universalTrees} editUniversalTrees={setUniversalTrees} /> : <Loading name="universal trees" />}
 
@@ -79,18 +80,19 @@ export default function Randomizer() {
                     : <Loading name="randomizer options" />}
 
                 {races && classes && randomizerOptions ?
-                    <ButtonGroup className="rounded-lg justify-center shadow-none">
+                    <ButtonGroup className="rounded-lg justify-center shadow-none w-full">
                         <Button outline color="cyan" disabled={ !isDataLoaded }
-                                onClick={() => setResults(randomize(races, classes, alignments, stats, universalTrees, destinyTrees, randomizerOptions))}
+                                onClick={() => setResults(randomize(results, races, classes, alignments, abilityPoints, universalTrees, destinyTrees, randomizerOptions))}
                         >
                             Randomize !
                         </Button>
                         <Button outline color="pink" disabled={ !isDataLoaded } onClick={() => setResults([])}>Clear</Button>
                     </ButtonGroup>
-                    : <Loading name="Buttons" />
+                    :
+                    <Loading name="Buttons" />
                 }
 
-                <>{JSON.stringify(results)}</>
+                {results ? <Results results={results} /> : <Loading name="Results" /> }
             </div>
         </div>
     );

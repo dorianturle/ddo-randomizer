@@ -10,7 +10,7 @@ export default function UpdateNotes() {
         <>
             <div className="flex justify-center">
                 <div className="flex">
-                    <Button onClick={() => setOpenModal(true)}>Update Notes</Button>
+                    <Button className="cursor-pointer" onClick={() => setOpenModal(true)}>Update Notes</Button>
                 </div>
             </div>
 
@@ -18,7 +18,34 @@ export default function UpdateNotes() {
             <ModalHeader>Update Notes</ModalHeader>
             <ModalBody>
                 <div className="flex flex-col gap-5 text-white">
-                    <div className="flex flex-col gap-2 bg-cyan-600 rounded-sm p-3">
+                    <div className="flex flex-col gap-2 bg-cyan-800 rounded-sm p-3">
+                        <h2 className="text-2xl underline font-bold">2026-05-24</h2>
+
+                        <div className="flex flex-col gap-1">
+                            <h3 className="text-xl font-bold">Dev Note</h3>
+                            <ul>
+                                <li>- Rewrote the entire randomizer in React & added better Typescript support to allow for more features.</li>
+                            </ul>
+                            <h3 className="text-xl font-bold">Feature</h3>
+                            <ul>
+                                <li>- Added the Arcane Trickster archetype.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div className="flex flex-col gap-2 bg-gray-600 rounded-sm p-3">
+                        <h2 className="text-2xl underline font-bold">2025-11-29</h2>
+
+                        <div className="flex flex-col gap-1">
+                            <h3 className="text-xl font-bold">Features</h3>
+                            <ul>
+                                <li>- Added the Dhampir & Eladrin Premium Races.</li>
+                                <li>- Added the Dark Bargainer & Chaosmancer Iconic Races.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div className="flex flex-col gap-2 bg-gray-600 rounded-sm p-3">
                         <h2 className="text-2xl underline font-bold">2024-02-29</h2>
 
                         <div className="flex flex-col gap-1">
