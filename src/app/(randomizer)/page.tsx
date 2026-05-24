@@ -81,12 +81,12 @@ export default function Randomizer() {
 
                 {races && classes && randomizerOptions ?
                     <ButtonGroup className="rounded-lg justify-center shadow-none w-full">
-                        <Button outline color="cyan" disabled={ !isDataLoaded }
+                        <Button className="cursor-pointer" outline color="cyan" disabled={ !isDataLoaded }
                                 onClick={() => setResults(randomize(results, races, classes, alignments, abilityPoints, universalTrees, destinyTrees, randomizerOptions))}
                         >
                             Randomize !
                         </Button>
-                        <Button outline color="pink" disabled={ !isDataLoaded } onClick={() => setResults([])}>Clear</Button>
+                        <Button className="cursor-pointer" outline color="pink" disabled={ !isDataLoaded } onClick={() => setResults([])}>Clear</Button>
                     </ButtonGroup>
                     :
                     <Loading name="Buttons" />
